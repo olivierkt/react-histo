@@ -1,0 +1,92 @@
+// Histo
+
+$default-delay: .2s;
+$bars: 7;
+$graph-height: 50px;
+
+@mixin bar-animation($time) {
+  visibility: hidden;
+  @include animation(animate-height);
+  @include animation-duration($time*2);
+  @include animation-fill-mode(forwards);
+  @include animation-timing-function(cubic-bezier(.35,.95,.67,.99));
+}
+
+.histo {
+  width: 300px;
+
+  &_range {
+    position: relative;
+    width: 100%;
+  }
+
+  &_input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  &_cont {
+    height: 50px;
+    position: relative;
+  }
+
+  &_bars {
+    height: $graph-height;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    list-style: none;
+
+    &:before {
+      content: "";
+      display: inline-block;
+      vertical-align: bottom;
+      height: 100%;
+    }
+  }
+
+  &_bar {
+    width: calc((100% / #{$bars} ) - 1px);
+    background: orange;
+    cursor: pointer;
+    margin-left: 1px;
+    text-align: center;
+    height: 0;
+    display: inline-block;
+    vertical-align: bottom;
+    visibility: hidden;
+    will-change: visibility;
+    @include transform(translateZ(0));
+
+    &:first-child {
+      margin-left: -2px;
+    }
+
+    .animate & {
+      visibility: visible;
+      @include bar-animation($default-delay);
+    }
+  }
+
+  &_btn {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  @for $i from 1 through $bars {
+    .animate &_bar--#{$i} {
+      @include animation-delay($default-delay+.1*$i);
+    }
+  }
+}
+
+@include keyframes(animate-height) {
+  0% {
+    height: 0;
+  }
+  100% {
+    visibility: visible;
+  }
+}
